@@ -2,6 +2,8 @@
 
 Erleichtert die Eingabe von Start- und Enddatum bei Events/Kalender-Einträge durch Shortcuts. Gleichzeitig wird bei der Datumseingabe der Kalender geöffnet.
 
+Hinweis: Funktioniert nur, wenn d.m.Y als Datumsformat in den Einstellungen eingetragen wurde.
+
 ##Shortcuts:
 * "#": löscht Datum
 * "=": Datum aus dem Nebenfeld übernehmen
