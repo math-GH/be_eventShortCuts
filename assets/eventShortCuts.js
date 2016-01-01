@@ -42,14 +42,32 @@ jQuery( document ).ready(function( jQuery ) {
 			} else if (code == 38) {
 				// Pfeiltaste nach oben
 				key = "<";
-			}
+			} 
 			
-		}
-
+		} 
 		
 		jQuery('#'+date2InputId).val( shortCuts(date1InputValue, date2InputValue, key ) );
                 reloadCalendar("#toggle_endDate");
 	});
+	
+	
+	
+	
+	jQuery('#ctrl_startDate, #ctrl_endDate').keydown( function(e){ 
+
+
+		var key = (jQuery(this).val());
+
+
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 9) {
+				// Tab-Taste => Fokus geht aus Element => Kalender schließen
+				closeCalendar();
+			}
+		
+
+	});
+	
 
 
         /* Key-Listener */
@@ -73,7 +91,7 @@ jQuery( document ).ready(function( jQuery ) {
 				key = "<";
 			}
 			
-		}
+		} 
 
 		jQuery('#'+date2InputId).val( shortCuts(date1InputValue, date2InputValue, key ) );
                 reloadCalendar("#toggle_startDate");
@@ -98,7 +116,7 @@ jQuery( document ).ready(function( jQuery ) {
 
 
 /* Wenn aktive Eingabemaske, dann öffne Kalender */
-jQuery('#ctrl_startDate,#ctrl_endDate').focus( function(e){
+jQuery('#ctrl_startDate').focus( function(e){
     openCalendar("#toggle_startDate");
     
 });
@@ -111,14 +129,13 @@ jQuery('#ctrl_endDate').focus( function(e){
 
 /* Wenn Eingabemaske verlassen wird, dann schließe Kalender */
 jQuery('#ctrl_startDate,#ctrl_endDate').blur( function(e){
-    closeCalendar();    
+    //closeCalendar();    
 });
 
 
 
 
 });
-
 
 
 
