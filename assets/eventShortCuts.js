@@ -16,48 +16,76 @@ function reloadCalendar(elem) {
 }
 
 jQuery( document ).ready(function( jQuery ) {
+    
+    var startInputs = "#ctrl_startDate, #ctrl_startdate"; // hat ein dazugehöriges endInput; nur Datum
+    var startInputs_hours = "#ctrl_start"; // hat ein dazugehöriges endInput;  Datum + zeit
+    var endInputs = "#ctrl_endDate, #ctrl_enddate"; //hat ein dazugehöriges startInput; nur Datum
+    var endInputs_hours = "#ctrl_stop"; //hat ein dazugehöriges startInput; Datum + zeit
+    var dateInputs = "#ctrl_date"; //keine endInputs
 
     /* Cookie löschen und neu setzen. Cookie enthält das letzte Datum (Taste L) */
-    jQuery('#ctrl_endDate, #ctrl_startDate').blur ( function() {
+    jQuery( startInputs + ',' + endInputs + ',' + dateInputs ).blur ( function() {
         document.cookie = "lastDate=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; 
         document.cookie="lastDate="+jQuery(this).val();
 
     });
 
     /* Key-Listener */
-    jQuery('#ctrl_endDate').keyup( function(e){ 
-        var date1InputId = 'ctrl_startDate'; // Bezugsdatum
-        var date2InputId = 'ctrl_endDate'; // Eingabefeld
+    jQuery( endInputs ).keyup( function(e){ 
 
-        var date1InputValue = jQuery( '#'+date1InputId ).val();
-        var date2InputValue = jQuery( '#'+date2InputId ).val();
+        var date1InputValue = jQuery( this ).parents("fieldset").find(startInputs).val();
+        var date2InputValue = jQuery( this ).val();
 
         var key = (jQuery(this).val());
 
         if ( e.shiftKey ) {
             var code = (e.keyCode ? e.keyCode : e.which);
-            if (code == 40) {
+            if (code === 40) {
                 // Pfeiltaste nach unten
                 key = ">";
-            } else if (code == 38) {
+            } else if (code === 38) {
                 // Pfeiltaste nach oben
                 key = "<";
             } 
 
         } 
 
-        jQuery('#'+date2InputId).val( shortCuts(date1InputValue, date2InputValue, key ) );
-        reloadCalendar("#toggle_endDate");
+        jQuery(this).val( shortCuts(date1InputValue, date2InputValue, key ) );
+        reloadCalendar(jQuery(this).next("img"));
+    });
+    
+    /* Key-Listener */
+    jQuery( dateInputs).keyup( function(e){ 
+
+        var date1InputValue = jQuery( this ).val();
+        var date2InputValue = jQuery( this ).val();
+
+        var key = (jQuery(this).val());
+
+        if ( e.shiftKey ) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code === 40) {
+                // Pfeiltaste nach unten
+                key = ">";
+            } else if (code === 38) {
+                // Pfeiltaste nach oben
+                key = "<";
+            } 
+
+        } 
+
+        jQuery(this).val( shortCuts(date1InputValue, date2InputValue, key ) );
+        reloadCalendar(jQuery(this).next("img"));
     });
 
 
 
 
-    jQuery('#ctrl_startDate, #ctrl_endDate').keydown( function(e){ 
-        var key = (jQuery(this).val());
+    jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).keydown( function(e){ 
+        //var key = (jQuery(this).val());
 
             var code = (e.keyCode ? e.keyCode : e.which);
-            if (code == 9) {
+            if (code === 9) {
                     // Tab-Taste => Fokus geht aus Element => Kalender schließen
                     closeCalendar();
             }
@@ -66,60 +94,59 @@ jQuery( document ).ready(function( jQuery ) {
 
 
     /* Key-Listener */
-    jQuery('#ctrl_startDate').keyup( function(e){ 
-        var date1InputId = 'ctrl_endDate'; // Bezugsdatum
-        var date2InputId = 'ctrl_startDate'; // Eingabefeld
+    jQuery( startInputs ).keyup( function(e){ 
 
-        var date1InputValue = jQuery( '#'+date1InputId ).val();
-        var date2InputValue = jQuery( '#'+date2InputId ).val();
+        var date1InputValue = jQuery( this ).parents("fieldset").find(endInputs).val();
+        //var date1InputValue = jQuery( '#'+date1InputId ).val();
+        var date2InputValue = jQuery( this ).val();
 
         var key = (jQuery(this).val());	
 
 
         if ( e.shiftKey ) {
                 var code = (e.keyCode ? e.keyCode : e.which);
-                if (code == 40) {
+                if (code === 40) {
                         // Pfeiltaste nach unten
                         key = ">";
-                } else if (code == 38) {
+                } else if (code === 38) {
                         // Pfeiltaste nach oben
                         key = "<";
                 }
 
         } 
 
-        jQuery('#'+date2InputId).val( shortCuts(date1InputValue, date2InputValue, key ) );
-        reloadCalendar("#toggle_startDate");
+        jQuery(this).val( shortCuts(date1InputValue, date2InputValue, key ) );
+        reloadCalendar(jQuery(this).next("img"));
 
     });
 
 
     /* autocomplete ausschalten, wenn shift-taste gedrückt */
-    jQuery( '#ctrl_startDate, #ctrl_endDate' ).keydown( function(e){ 
+    jQuery( startInputs + ',' + endInputs + ',' + dateInputs ).keydown( function(e){ 
         if ( e.shiftKey ) {
-                jQuery( '#ctrl_startDate, #ctrl_endDate' ).attr("autocomplete","off");
+                jQuery( this ).attr("autocomplete","off");
         }
     });
 
     /* autocomplete einschalten */
-    jQuery( '#ctrl_startDate, #ctrl_endDate' ).keyup( function(e){ 		
+    jQuery( startInputs + ',' + endInputs + ',' + dateInputs ).keyup( function(e){ 		
         var code = (e.keyCode ? e.keyCode : e.which);
-        if (code == 16) {
-                jQuery( '#ctrl_startDate, #ctrl_endDate' ).removeAttr("autocomplete");
+        if (code === 16) {
+                jQuery( this ).removeAttr("autocomplete");
         }
     });
 
 
 /* Wenn aktive Eingabemaske, dann öffne Kalender */
 jQuery('#ctrl_startDate').focus( function(e){
-    openCalendar("#toggle_startDate");
+    //openCalendar("#toggle_startDate");
     
 });
 
 /* Wenn aktive Eingabemaske, dann öffne Kalender */
-jQuery('#ctrl_endDate').focus( function(e){
-    openCalendar("#toggle_endDate");
-    
+jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).focus( function(e){
+    openCalendar(jQuery(this).next("img"));
+    //openCalendar("#toggle_endDate");
 });
 
 /* Wenn Eingabemaske verlassen wird, dann schließe Kalender */
@@ -143,7 +170,7 @@ function shortCuts(date1InputValue, date2InputValue, key ) {
 
 	var dateNew = date2InputValue;
 
-	if (date1InputValue.length != 10 && key != "t") {
+	if (date1InputValue.length !== 10 && key !== "t") {
 		// wenn kein Bezugsdatum vorhanden ist, dann abbrechen
 		// wenn t, dann nicht abbrechen (Heute-Datum setzen, kein Bezugsdatum benoetigt)
 		return dateNew;
@@ -216,7 +243,7 @@ function shortCuts(date1InputValue, date2InputValue, key ) {
 function dateCalc( date1, years, months, days ) {
 	
 	
-	if (date1 != 0) {
+	if (date1 !== 0) {
 		var datumOrg = date1;
 		
 		var year = parseInt(datumOrg.substring(6)); 	
@@ -246,8 +273,12 @@ function getCookie(cname) {
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length,c.length);
+        }
     }
     return "";
 } 
