@@ -1,4 +1,3 @@
-
 /* öffnet den Kalender */
 function openCalendar(elem){
     jQuery(elem).trigger("click");
@@ -29,8 +28,17 @@ jQuery( document ).ready(function( jQuery ) {
         document.cookie="lastDate="+jQuery(this).val();
 
     });
+    
+    // allgemeiner Keylistener füer alle Felder
+    jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).keydown( function(e){ 
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code === 9) {
+                    // Tab-Taste => Fokus geht aus Element => Kalender schließen
+                    closeCalendar();
+            }
+    });
 
-    /* Key-Listener */
+    /* Key-Listener für endInputs (benötigt startInputs */
     jQuery( endInputs ).keyup( function(e){ 
 
         var date1InputValue = jQuery( this ).parents("fieldset").find(startInputs).val();
@@ -53,47 +61,11 @@ jQuery( document ).ready(function( jQuery ) {
         jQuery(this).val( shortCuts(date1InputValue, date2InputValue, key ) );
         reloadCalendar(jQuery(this).next("img"));
     });
-    
-    /* Key-Listener */
-    jQuery( dateInputs).keyup( function(e){ 
-
-        var date1InputValue = jQuery( this ).val();
-        var date2InputValue = jQuery( this ).val();
-
-        var key = (jQuery(this).val());
-
-        if ( e.shiftKey ) {
-            var code = (e.keyCode ? e.keyCode : e.which);
-            if (code === 40) {
-                // Pfeiltaste nach unten
-                key = ">";
-            } else if (code === 38) {
-                // Pfeiltaste nach oben
-                key = "<";
-            } 
-
-        } 
-
-        jQuery(this).val( shortCuts(date1InputValue, date2InputValue, key ) );
-        reloadCalendar(jQuery(this).next("img"));
-    });
+     
 
 
 
-
-    jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).keydown( function(e){ 
-        //var key = (jQuery(this).val());
-
-            var code = (e.keyCode ? e.keyCode : e.which);
-            if (code === 9) {
-                    // Tab-Taste => Fokus geht aus Element => Kalender schließen
-                    closeCalendar();
-            }
-    });
-
-
-
-    /* Key-Listener */
+    /* Key-Listener für startInputs (benötigt endInputs */
     jQuery( startInputs ).keyup( function(e){ 
 
         var date1InputValue = jQuery( this ).parents("fieldset").find(endInputs).val();
@@ -119,6 +91,30 @@ jQuery( document ).ready(function( jQuery ) {
         reloadCalendar(jQuery(this).next("img"));
 
     });
+    
+    
+    /* Key-Listener für normale dateInputs */
+    jQuery( dateInputs).keyup( function(e){ 
+
+        var date1InputValue = jQuery( this ).val();
+
+        var key = (jQuery(this).val());
+
+        if ( e.shiftKey ) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code === 40) {
+                // Pfeiltaste nach unten
+                key = ">";
+            } else if (code === 38) {
+                // Pfeiltaste nach oben
+                key = "<";
+            } 
+
+        } 
+
+        jQuery(this).val( shortCuts(date1InputValue, date1InputValue, key ) );
+        reloadCalendar(jQuery(this).next("img"));
+    });
 
 
     /* autocomplete ausschalten, wenn shift-taste gedrückt */
@@ -137,24 +133,10 @@ jQuery( document ).ready(function( jQuery ) {
     });
 
 
-/* Wenn aktive Eingabemaske, dann öffne Kalender */
-jQuery('#ctrl_startDate').focus( function(e){
-    //openCalendar("#toggle_startDate");
-    
-});
-
-/* Wenn aktive Eingabemaske, dann öffne Kalender */
-jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).focus( function(e){
-    openCalendar(jQuery(this).next("img"));
-    //openCalendar("#toggle_endDate");
-});
-
-/* Wenn Eingabemaske verlassen wird, dann schließe Kalender */
-jQuery('#ctrl_startDate,#ctrl_endDate').blur( function(e){
-    //closeCalendar();    
-});
-
-
+    /* Wenn aktive Eingabemaske, dann öffne Kalender */
+    jQuery( startInputs + ',' + startInputs_hours + ',' + endInputs + ',' + endInputs_hours + ',' + dateInputs ).focus( function(e){
+        openCalendar(jQuery(this).next("img"));
+    });
 
 
 });
